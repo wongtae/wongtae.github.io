@@ -1,0 +1,170 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>打一個主題，看大家最近在聊什麼</title><meta name="claude:viewport-fit-sides" content="cover"><meta name="packet-version" content="v2｜2026-11-18｜測試官實測過"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@300;500;700;900&family=IBM+Plex+Mono:wght@500&display=swap"><style>
+/* 版面：精裝手冊。墨綠封面配黃銅細線，內頁石色紙、明體標題、大號黃銅章節數字 */
+:root{--bg:#e8e6e1;--paper:#f7f6f2;--ink:#1d2421;--mut:#68706b;--line:#d9d5cc;--hair:#c9c2b2;
+--deep:#1f2d27;--on-deep:#ece6d8;--brass:#a8884f;--brass-ink:#7d6332;
+--warn-bg:#f3eadb;--warn:#9a5b22;--tip-bg:#e7ece6;--tip:#4c6b58;--code-bg:#1a2420;--code:#e3ded2;
+--display:"Noto Serif TC","Songti TC",serif;--body:"Noto Sans TC",-apple-system,"PingFang TC",sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+--shadow:0 1px 2px #1d24210f,0 12px 32px -18px #1d242140}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1311;--paper:#161c19;--ink:#e6e1d6;--mut:#9a9f99;--line:#2a322e;--hair:#4a4636;
+--deep:#1b2722;--on-deep:#ece6d8;--brass:#c6a76b;--brass-ink:#d4b77d;--warn-bg:#2c2318;--warn:#d9a066;--tip-bg:#1a2620;--tip:#8fb39c;--code-bg:#0b0f0d;--code:#e3ded2;
+--shadow:0 1px 2px #0006,0 12px 32px -18px #000a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1311;--paper:#161c19;--ink:#e6e1d6;--mut:#9a9f99;--line:#2a322e;--hair:#4a4636;
+--deep:#1b2722;--on-deep:#ece6d8;--brass:#c6a76b;--brass-ink:#d4b77d;--warn-bg:#2c2318;--warn:#d9a066;--tip-bg:#1a2620;--tip:#8fb39c;--code-bg:#0b0f0d;--code:#e3ded2;
+--shadow:0 1px 2px #0006,0 12px 32px -18px #000a;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.85 var(--body);-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding-block:28px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;grid-template-columns:minmax(0,1fr);gap:22px}
+.page{background:var(--paper);border-radius:3px;padding:52px 56px 48px;box-shadow:var(--shadow);min-width:0}
+/* 封面 */
+.cover{background:var(--deep);color:var(--on-deep);padding:20px;position:relative}
+.frame{border:1px solid var(--brass);padding:40px 38px 30px;position:relative}
+.frame::after{content:"";position:absolute;inset:5px;border:1px solid color-mix(in srgb,var(--brass) 45%,transparent);pointer-events:none}
+.brand{display:flex;justify-content:space-between;gap:12px;font:500 11px/1 var(--mono);letter-spacing:.28em;color:var(--brass);text-transform:uppercase}
+.cover h1{font:900 clamp(30px,5.6vw,46px)/1.3 var(--display);margin:56px 0 14px;letter-spacing:.02em;word-break:keep-all;overflow-wrap:anywhere}
+.cover .sub{font-size:16px;line-height:1.8;color:color-mix(in srgb,var(--on-deep) 78%,transparent);margin:0;max-width:34em}
+.rule{display:flex;align-items:center;gap:12px;margin:40px 0 6px;font:500 11px var(--mono);letter-spacing:.28em;color:var(--brass)}
+.rule::after{content:"";flex:1;height:1px;background:var(--brass);opacity:.6}
+.gets{list-style:none;padding:0;margin:0 0 30px}
+.gets li{display:grid;grid-template-columns:2.6em 1fr;align-items:baseline;padding:13px 0;border-bottom:1px solid color-mix(in srgb,var(--brass) 35%,transparent);font:700 17px/1.5 var(--display);letter-spacing:.02em}
+.gets b{font:500 12px var(--mono);color:var(--brass);letter-spacing:.1em}
+.route{font-size:13.5px;color:color-mix(in srgb,var(--on-deep) 70%,transparent);margin:0 0 26px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 22px;font:500 11.5px/1.6 var(--mono);letter-spacing:.06em;color:color-mix(in srgb,var(--on-deep) 62%,transparent);padding-top:16px;border-top:1px solid color-mix(in srgb,var(--brass) 35%,transparent)}
+.meta .kw{color:var(--brass)}
+/* 章節 */
+.head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 22px;align-items:end;padding-bottom:22px;margin-bottom:26px;border-bottom:1px solid var(--hair)}
+.num{grid-row:span 2;font:300 64px/0.9 var(--display);color:var(--brass);font-variant-numeric:lining-nums}
+.label{font:500 11.5px var(--mono);letter-spacing:.24em;color:var(--brass-ink)}
+h2{font:900 26px/1.4 var(--display);margin:0;letter-spacing:.02em;word-break:keep-all;overflow-wrap:anywhere}
+h3{font:700 18px/1.5 var(--display);margin:34px 0 10px;letter-spacing:.02em}
+p,li{max-width:38em}
+p{margin:0 0 14px}
+strong{font-weight:700;color:var(--ink);background:linear-gradient(transparent 62%,color-mix(in srgb,var(--brass) 26%,transparent) 0)}
+a{color:var(--brass-ink);text-decoration-thickness:1px;text-underline-offset:3px;word-break:break-all}
+a:focus-visible,.cp:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+code{font:.86em var(--mono);background:color-mix(in srgb,var(--brass) 12%,transparent);padding:1px 6px;border-radius:2px;word-break:break-all}
+ul,ol{padding-left:1.4em}
+li{margin:4px 0}
+ol li::marker{font:500 .85em var(--mono);color:var(--brass-ink)}
+ul li::marker{color:var(--brass)}
+.code,.ai{position:relative;margin:18px 0;min-width:0}
+.code pre{background:var(--code-bg);color:var(--code);padding:20px 22px;border-radius:2px;overflow-x:auto;font:13px/1.7 var(--mono);margin:0}
+.ai{border-top:1px solid var(--brass);border-bottom:1px solid var(--brass);padding:34px 4px 18px;background:transparent}
+.ai::before{content:"直接跟 AI 說";position:absolute;top:12px;left:4px;font:500 11px var(--mono);color:var(--brass-ink);letter-spacing:.24em}
+.ai pre{margin:0;white-space:pre-wrap;font:500 16px/1.85 var(--display);color:var(--ink)}
+.cp{position:absolute;top:8px;right:6px;font:500 11px var(--mono);letter-spacing:.12em;border:1px solid var(--hair);background:var(--paper);color:var(--ink);border-radius:2px;padding:4px 12px;cursor:pointer}
+.cp:hover{border-color:var(--brass)}
+.code .cp{background:transparent;color:var(--code);border-color:#ffffff30;top:10px;right:10px}
+.box{padding:16px 20px;margin:18px 0;border-radius:2px}
+.box p{margin:4px 0}
+.warn{background:var(--warn-bg);box-shadow:inset 2px 0 var(--warn)}
+.tip{background:var(--tip-bg);box-shadow:inset 2px 0 var(--tip)}
+.test{background:transparent;border:1px dashed var(--brass);padding-top:34px;position:relative}
+.test::before{content:"我們的實測 · 待補";position:absolute;top:12px;left:20px;font:500 11px var(--mono);color:var(--brass-ink);letter-spacing:.24em}
+.test.done{border-style:solid}
+.test.done::before{content:"我們的實測"}
+.box img{display:block;margin:12px 0 4px;border:1px solid var(--hair)}
+.page img{cursor:zoom-in}
+.cap{display:block;font-size:12.5px;color:var(--mut);margin:0 0 6px}
+.zoom{position:fixed;inset:0;z-index:9;background:#000000e0;overflow:auto;padding:16px;cursor:zoom-out;display:flex}
+.zoom img{max-width:none;margin:auto;border-radius:2px}
+blockquote{margin:18px 0;padding:2px 0 2px 20px;border-left:1px solid var(--brass);color:var(--mut)}
+.tw{overflow-x:auto;margin:18px 0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.7}
+th,td{border-bottom:1px solid var(--line);padding:11px 12px;text-align:left;vertical-align:top}
+thead th{font:500 11px var(--mono);color:var(--brass-ink);letter-spacing:.18em;border-bottom:1px solid var(--ink)}
+td:first-child{font-weight:700}
+ul.check{list-style:none;padding-left:0}
+ul.check li{position:relative;padding-left:28px}
+ul.check li::before{content:"";position:absolute;left:0;top:.55em;width:14px;height:14px;border:1px solid var(--brass)}
+img{max-width:100%;border-radius:2px}
+.foot{text-align:center;color:var(--mut);font-size:12.5px;line-height:2;margin-top:18px;letter-spacing:.04em}
+.foot::before{content:"";display:block;width:40px;height:1px;background:var(--brass);margin:0 auto 18px}
+@media (max-width:640px){.page{padding:34px 22px 30px}.cover{padding:12px}.frame{padding:28px 20px 22px}.cover h1{margin-top:40px}.num{font-size:48px}h2{font-size:22px}}
+@media print{body{background:#fff;font-size:13.5px}.wrap{max-width:none;padding:0;display:block}.page{box-shadow:none;border-radius:0;margin:0;break-after:page;padding:30px 36px}
+.cp{display:none}.cover{min-height:96vh;display:flex}.frame{flex:1}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}@page{size:A4;margin:10mm}}
+</style></head><body><main class="wrap"><section class="page cover"><div class="frame"><div class="brand"><span>試了再說 · Package</span></div><h1>打一個主題，看大家最近在聊什麼</h1><p class="sub">用免費的 last30days，叫 AI 幫你翻 Reddit、YouTube 最近 30 天的討論；第一次設定那幾題照這份按</p><div class="rule">這份 Package 裡有</div><ul class='gets'><li><b>①</b>Mac／Windows 安裝步驟</li><li><b>②</b>第一次設定每題怎麼按</li><li><b>③</b>10 個做選題的問法</li></ul><p class="route">重點 → 先懂 → 準備 → ① 安裝 → ② 設定 → ③ 問法 → 安全</p><div class="meta"><span>10 分鐘看完</span></div></div></section><section class="page"><div class="head"><div class="num">01</div><div class="label">重點</div><h2>看完你會帶走什麼</h2></div><div class="box tip"><p>💡 <strong>它能幫你翻最近 30 天的社群討論，照按讚、留言排好；先只開免費來源，設定時讀登入資料那幾題不確定就按不要。</strong></p></div>
+<h3>它幫你省掉什麼</h3>
+<ul><li><strong>不用每個平台滑一遍</strong>：在 Claude Code 打 <code>/last30days 主題</code>，它去翻 Reddit、YouTube、科技論壇這些來源最近 30 天的討論。</li><li><strong>不用自己判斷誰在亂喊</strong>：官方說它照按讚、留言這些真人反應打分數，整理成重點，並標出每則的出處。</li><li><strong>基本來源不用錢</strong>：官方說 Reddit（含留言）、Hacker News（科技人常逛的論壇）、GitHub 不用申請任何帳號就能用；YouTube 要另外裝一個免費的小工具。</li></ul>
+<h3>裝之前先知道 3 件事</h3>
+<ol><li><strong>電腦要有 Python 3.12 以上</strong>：Python 是讓電腦跑這個工具的程式語言。Mac 內建的是 3.9，不夠，它會直接停下來告訴你怎麼裝。</li><li><strong>設定時有幾題會問你要不要給權限</strong>：要不要讀瀏覽器裡 X、Reddit 的登入資料、要不要自動裝一堆小工具。不確定就按不要，之後還能再開。每題怎麼按看「② 第一次設定每題怎麼按」。</li><li><strong>不是每個平台都免費</strong>：TikTok、IG、Threads 要另外申請 ScrapeCreators（一家幫你抓社群資料的服務），官方說前 10,000 次免費，之後用多少付多少。</li></ol>
+<h3>我們檢查過什麼</h3>
+<ul><li>安全掃描加人工複核判 🟡：可以用，但要會設定。掃描抓到的「後門」「忽略指令」字樣都在作者自己的測試檔裡，不會裝到你電腦；它真的會做的是「經你同意後讀瀏覽器登入資料」和「自動裝外部小工具」。</li><li>測試官在隔離的測試資料夾跑過：Python 3.9 會被擋並印出裝法；換成 3.12 後，「只檢查、不搜尋」模式顯示可以開始，瀏覽器登入資料預設是關的。</li><li>它執行時不需要另外裝第三方套件，只用 Python 內建功能；外掛設定裡沒有自動觸發的動作。</li><li>測試官另外照官方找 Python 的方法模擬過：電腦裡有 3.12，就算查版本的 <code>python3 --version</code> 還是顯示 3.9，它也會自己用 3.12。</li><li>測試官也確認過：沒有 yt-dlp 時可用來源裡沒有 YouTube，自己裝好 yt-dlp 後 YouTube 就出現，不用重跑設定。</li></ul>
+<div class="box warn"><p>⚠️ 最容易踩的坑：官方 README 下面的安裝表格少了一行 <code>/plugin install last30days</code>，照表格做會裝不起來。完整步驟看「① Mac／Windows 安裝步驟」。</p></div></section><section class="page"><div class="head"><div class="num">02</div><div class="label">先懂</div><h2>它是什麼</h2></div><p>skill（技能包）就是給 AI 的工作說明書。last30days 裝進 Claude Code（一個會幫你在電腦上操作的 AI 助手）之後，你打 <code>/last30days</code> 加一個主題，Claude 就照這套流程去各個網站搜、排序、整理。</p>
+<ul><li><strong>沒有它</strong>：IG、YouTube、論壇一個一個開，滑完還要自己判斷哪則真的有人在討論。</li><li><strong>有它</strong>：打一個主題，它翻最近 30 天的討論，照按讚、留言、新不新打分數，整理成重點，標出處。</li><li><strong>結果存在哪</strong>：官方說預設存在「文件」裡的 <code>Last30Days</code> 資料夾，一次搜尋一份文字檔，之後可以叫它查以前搜過的。</li><li><strong>授權</strong>：MIT，可以免費用、可以商用，保留授權聲明就好。作者本人維護，有寫資安說明（SECURITY.md）。</li></ul>
+<h3>哪些來源免費、哪些要錢（官方說法）</h3>
+<ul><li><strong>不用申請就能用</strong>：Reddit（含留言）、Hacker News、Polymarket（預測市場）、GitHub</li><li><strong>免費，但要另外裝工具</strong>：YouTube（要裝 yt-dlp，一個免費的影片資訊下載工具）</li><li><strong>要讀你的登入資料或申請金鑰</strong>：X（三選一：X 官方金鑰、讀你瀏覽器裡已登入 x.com 的資料、Xquik 或 xAI 金鑰）</li><li><strong>要申請 ScrapeCreators</strong>：TikTok、Instagram、Threads、Pinterest、LinkedIn、YouTube 留言；前 10,000 次免費，之後用多少付多少</li><li><strong>其他選用</strong>：Brave 網頁搜尋每月 2,000 次免費；Perplexity 要付費</li><li><strong>沒有的</strong>：PTT、Dcard 不在它的來源名單裡</li></ul>
+<p>「金鑰」（API key）就是讓程式用你的名義連上別家服務的通行碼，申請了就可能被計費，不用的話不必申請。</p></section><section class="page"><div class="head"><div class="num">03</div><div class="label">準備</div><h2>開始前要有的東西</h2></div><ul class="check"><li>Claude Code（已經裝好、能打字跟它聊）</li><li>Python 3.12 以上（下一章教你查、教你裝）</li><li>Mac 要裝 Python 的話：官方建議用 Homebrew（Mac 上裝軟體的免費工具）</li><li>官方說：電腦裡如果已經有 uv（另一個裝 Python 的工具），它會自己下載一份 3.12（約 28MB），不用另外裝；沒聽過 uv 就照下一章裝 Python</li><li>想搜 YouTube：yt-dlp（免費，下一章有裝法）</li><li>費用：用免費來源是 0 元；開 TikTok、IG 這類來源，超過免費額度要付費</li><li>以下指令都是 Mac 終端機的寫法；終端機在「應用程式 → 工具程式 → 終端機」</li></ul>
+<h3>Windows 可以用嗎？</h3>
+<p>官方有寫 Windows 的 Python 裝法：</p>
+<div class="code"><button class="cp">複製</button><pre>winget install Python.Python.3.12</pre></div>
+<p>另外官方和工具測試寫到的 Windows 差別：</p>
+<ul><li>報告預設存在 <code>C:\Users\&lt;你的使用者名稱&gt;\Documents\Last30Days\</code>。</li><li>讀瀏覽器登入資料這個功能，在 Windows 只讀 Firefox。</li><li>Claude Desktop（桌面 App 版）官方寫 Windows 版還沒支援；這份教的是 Claude Code 版。</li><li>裝 yt-dlp 的 <code>brew</code> 指令是 Mac 用的。官方寫 Windows 改用下面這行裝，而且提醒它可能裝到不在 PATH（系統找指令的路徑）裡的資料夾；裝完 YouTube 還是沒開的話，要把那個資料夾加進 PATH。</li></ul>
+<div class="code"><button class="cp">複製</button><pre>pip install yt-dlp</pre></div>
+<p>我們用的是 Mac，Windows 這段照官方文件整理，還沒自己試過，照做前請先小心確認。</p></section><section class="page"><div class="head"><div class="num">04</div><div class="label">①</div><h2>Mac／Windows 安裝步驟</h2></div><ol><li><strong>先查 Python 版本</strong>：打開終端機（Windows 打開「命令提示字元」或 PowerShell），輸入：</li></ol>
+<div class="code"><button class="cp">複製</button><pre>python3 --version</pre></div>
+<p>   - 怎麼確認成功：看到 <code>Python 3.12.x</code> 或更新的數字就對了，直接跳到步驟 3。Windows 如果說找不到 <code>python3</code>，改打 <code>python --version</code>。</p>
+<p>   - 卡住怎麼辦：看到 <code>Python 3.9.6</code>（Mac 內建）或更舊，先再打一次 <code>python3.12 --version</code>；有看到 <code>Python 3.12.x</code> 代表你以前裝過，直接跳到步驟 3，沒有才做步驟 2。</p>
+<ol><li><strong>版本不夠就裝 3.12</strong>（這兩行是工具自己印出來的官方建議）：</li></ol>
+<p>   Mac：</p>
+<div class="code"><button class="cp">複製</button><pre>brew install python@3.12</pre></div>
+<p>   Windows：</p>
+<div class="code"><button class="cp">複製</button><pre>winget install Python.Python.3.12</pre></div>
+<p>   - 怎麼確認成功：關掉終端機重開，打下面這行，看到 <code>Python 3.12.x</code> 就對了。這時候打 <code>python3 --version</code> 可能還是顯示 3.9，沒關係，last30days 會自己去找 3.12。Windows 打 <code>python --version</code> 或 <code>py -3.12 --version</code>。</p>
+<div class="code"><button class="cp">複製</button><pre>python3.12 --version</pre></div>
+<p>   - 卡住怎麼辦：Mac 出現 <code>command not found: brew</code>，代表電腦沒有 Homebrew；可以改到 Python 官網（python.org）下載 3.12 以上的 macOS 安裝檔來裝。從官網裝的 3.12 它一樣找得到，就算 <code>python3 --version</code> 還是顯示 3.9 也沒關係，用上面那行 <code>python3.12 --version</code> 確認就好。</p>
+<ol><li><strong>打開 Claude Code</strong>，在你平常工作的資料夾開。第一次在某個資料夾開，Claude Code 會問要不要信任這個資料夾：只在你自己的工作資料夾按信任，不要在剛下載的陌生資料夾裡開。</li></ol>
+<ol><li><strong>加入作者的外掛市集</strong>，在 Claude Code 裡輸入：</li></ol>
+<div class="code"><button class="cp">複製</button><pre>/plugin marketplace add mvanhorn/last30days-skill</pre></div>
+<ol><li><strong>安裝外掛</strong>（README 下面的表格漏了這行，一定要打）：</li></ol>
+<div class="code"><button class="cp">複製</button><pre>/plugin install last30days</pre></div>
+<p>   - 怎麼確認成功：做下一步，第一次打 <code>/last30days</code> 會跳出設定精靈，就代表裝好了。</p>
+<p>   - 卡住怎麼辦：打 <code>/last30days</code> 沒反應，多半是漏了這一步，再打一次上面這行。</p>
+<ol><li><strong>第一次搜尋</strong>：打 <code>/last30days</code> 加一個主題，它會先跳出設定精靈。每一題怎麼按，照「② 第一次設定每題怎麼按」。</li></ol>
+<div class="ai"><button class="cp">複製</button><pre>/last30days 露營新手最常問的問題</pre></div>
+<ol><li><strong>想先看它會讀寫哪些地方、不真的搜尋</strong>：跟 Claude 說這句，它會跑「只檢查」模式，列出會讀什麼、寫到哪個資料夾、會連哪些來源。</li></ol>
+<div class="ai"><button class="cp">複製</button><pre>用 last30days 的 --preflight 檢查一次，告訴我它會讀寫哪些地方、連哪些網站</pre></div>
+<ol><li><strong>搜尋時 Claude 會問權限</strong>：它要執行 last30days 的指令時會問你，看清楚是 last30days 的指令再允許。</li></ol>
+<ol><li><strong>用完不要了</strong>： - 在 Claude Code 打 <code>/plugin</code>，打開外掛管理，把 last30days 移除。 - 步驟 4 加入的外掛市集（名字是 <code>last30days-skill</code>）也一起移除：一樣在 <code>/plugin</code> 裡找管理市集的地方。 - 刪掉它存資料的地方：「文件」裡的 <code>Last30Days</code>、家目錄裡的 <code>.config/last30days</code> 和 <code>.local/share/last30days</code>。<code>.config</code>、<code>.local</code> 是隱藏資料夾，Finder 要在家目錄按 Cmd＋Shift＋. 才看得到；或在終端機打 <code>ls -a ~</code> 確認。 - 選過「Auto setup」的話，它還自己裝了 yt-dlp（Mac 用 <code>brew uninstall yt-dlp</code> 移除）和放在 <code>.local/bin</code> 裡的 4 個小工具：<code>digg-pp-cli</code>、<code>arxiv-pp-cli</code>、<code>techmeme-pp-cli</code>、<code>yahoo-finance-pp-cli</code>（查股價用的），要另外刪。這些小工具要電腦有 Node.js 才裝得上，沒有就不會出現。 - 它沒有一個指令就全部移除的功能，上面這幾個地方要自己一個一個刪。</li></ol></section><section class="page"><div class="head"><div class="num">05</div><div class="label">②</div><h2>第一次設定每題怎麼按</h2></div><p>第一次打 <code>/last30days</code>，會跳出英文的設定精靈。底下照「最少風險」排，不確定就照推薦按。</p>
+<h3>我們推薦的按法</h3>
+<ul><li><strong>第一題「How would you like to set up?」</strong>，有三個選項：</li></ul>
+<p>  - <code>Auto setup (~30s)</code>：自動設定，會讀登入資料、裝一批小工具</p>
+<p>  - <code>Manual setup</code>：自己一個個設，新手不用選</p>
+<p>  - <code>Skip for now</code>：先跳過 ← <strong>推薦選這個</strong></p>
+<p>  - 為什麼：官方原文寫「Auto setup installs the free CLIs either way」，就算你拒絕讀登入資料，自動設定也會用 Homebrew 裝 yt-dlp，再用作者另一個套件裝一批小工具到 <code>~/.local/bin</code>。那個套件不在這個專案裡，我們沒有審過。</p>
+<p>  - 選 Skip for now：什麼都不裝，先用 Reddit（含留言）、Hacker News、Polymarket、GitHub、網頁這些免費來源。</p>
+<ul><li><strong>搜完它還會再問一次：要不要加 TikTok、IG（ScrapeCreators）</strong> → 一樣按最後的 <strong>Skip for now</strong>。</li></ul>
+<p>  - 選了先跳過，不代表後面什麼都不問。官方流程是：先幫你搜完、給結果，接著問這一題，因為之後就不會再問。</p>
+<p>  - 四個選項：<code>ScrapeCreators via GitHub (recommended - most free calls)</code>、<code>Open scrapecreators.com (Google sign-in)</code>、<code>I have a key</code>、<code>Skip for now</code>。</p>
+<p>  - 第一個寫著 recommended（推薦），不代表你要選；選了會打開 GitHub 頁面、把代碼複製到剪貼簿。沒打算付費就按最後的 <code>Skip for now</code>。</p>
+<ul><li><strong>想搜 YouTube</strong>：自己在終端機裝 yt-dlp（官方寫的裝法；Windows 改用 <code>pip install yt-dlp</code>，見「準備」章）：</li></ul>
+<div class="code"><button class="cp">複製</button><pre>brew install yt-dlp</pre></div>
+<p>  - 裝好之後不用重跑設定，它會自己把 YouTube 加進可用來源（測試官確認過：沒裝時來源清單沒有 YouTube，裝好就出現）。</p>
+<h3>如果你選了 Auto setup，後面幾題這樣按</h3>
+<ol><li><strong>要不要讀瀏覽器裡 X 的登入資料（cookie）</strong>（題目開頭是「Auto setup installs the free CLIs either way … Include X?」）→ 選 <strong>Skip X - just the CLIs</strong>。 - 三個選項：<code>Yes - X cookies + all CLIs</code>、<code>Skip X - just the CLIs</code>、<code>xAI API key for X instead</code>。 - cookie 是瀏覽器記住你「已經登入」的小檔案。同意的話，它會從瀏覽器讀出 X 的登入資料，拿去搜 X。程式只拿 x.com 的那兩個值，只送回 x.com；但等於讓一個工具拿著你的登入狀態，不確定就不要。 - Mac 用 Chrome 這類瀏覽器時，讀登入資料會跳出系統的鑰匙圈視窗問你，不想給就不要允許。</li><li><strong>如果接著問要不要用 Reddit 登入資料</strong> → 選 <strong>No - keep Reddit logged out</strong>。 - 另一個選項是 <code>Yes - use my Reddit login</code>。這題官方自己寫「may breach Reddit's terms」（可能違反 Reddit 的使用條款）。不登入也能搜 Reddit。 - 補充：官方資安說明（SECURITY.md）的 cookie 段只寫了 X，沒寫 Reddit 這段，文件比程式碼舊。</li><li><strong>要不要填 ScrapeCreators 金鑰</strong>（TikTok、IG、Threads 要用）→ 沒打算付費就選 <strong>Skip for now</strong>。 - 選項和上面「先跳過」那段一樣，第一個寫著 recommended，不用理它，按最後的 <code>Skip for now</code>。 - 官方說前 10,000 次免費，之後用多少付多少；而且填了之後，這把金鑰也會拿去補 Reddit、YouTube 的搜尋，用量會比你想的快。</li><li><strong>Grok 路線（用 xAI 的 Grok 搜 X）</strong> → <strong>不要開</strong>。 - 設定精靈不會主動推薦它，要手動設定才會走。但這條路線會用「跳過權限詢問」的模式跑 Grok 的程式，等於不再一步一步問你。</li></ol>
+<h3>設定之外，電腦裡本來就有的東西</h3>
+<ul><li><strong>你的電腦裡如果設過 OpenAI、Gemini、xAI、OpenRouter 的金鑰</strong>（就算是為了別的工具設的），它每次搜尋都會把主題和搜到的片段送去那家重新排序：會花那家的錢，主題也會送出去。不想這樣，就不要在同一台電腦的環境裡留著這些金鑰。</li><li><strong>電腦有登入 GitHub 指令工具（gh）</strong>：它會拿來搜 GitHub。</li></ul></section><section class="page"><div class="head"><div class="num">06</div><div class="label">③</div><h2>10 個做選題的問法</h2></div><p>在 Claude Code 裡直接貼，把 [括號] 換成你的主題。句型照官方範例（人名、產品、A vs B、「最近什麼最紅」）改成中文。</p>
+<h3>找題目</h3>
+<div class="ai"><button class="cp">複製</button><pre>/last30days [你的領域] 最近大家在討論什麼</pre></div>
+<div class="ai"><button class="cp">複製</button><pre>/last30days [你的領域] 新手最常問的問題</pre></div>
+<div class="ai"><button class="cp">複製</button><pre>/last30days [你的領域] 大家最常抱怨什麼</pre></div>
+<div class="ai"><button class="cp">複製</button><pre>/last30days 最近 AI 工具圈什麼最紅</pre></div>
+<h3>比較、評價</h3>
+<div class="ai"><button class="cp">複製</button><pre>/last30days [產品 A] vs [產品 B] vs [產品 C]</pre></div>
+<div class="ai"><button class="cp">複製</button><pre>/last30days [某個工具或產品] 真實使用心得</pre></div>
+<div class="ai"><button class="cp">複製</button><pre>/last30days [某個人或品牌]</pre></div>
+<h3>開店、做生意</h3>
+<div class="ai"><button class="cp">複製</button><pre>/last30days [你賣的東西] 大家買之前最在意什麼</pre></div>
+<h3>搜完接著問 Claude（這兩句是跟 Claude 聊，不會再去搜）</h3>
+<div class="ai"><button class="cp">複製</button><pre>把上面的結果整理成 5 個短影音題目，每個附一句開場和原文出處</pre></div>
+<div class="ai"><button class="cp">複製</button><pre>上面哪些討論最多人回應？挑 3 個，用繁體中文各寫一段重點</pre></div>
+<h3>查以前搜過的</h3>
+<p>官方範例有「search my library」的用法，可以翻以前存下來的結果：</p>
+<div class="ai"><button class="cp">複製</button><pre>/last30days search my library for [主題]</pre></div>
+<h3>中文小提醒</h3>
+<ul><li>官方範例的主題都是英文；它的來源大多是英文社群，PTT、Dcard 不在名單裡。</li><li>官方說：搜中文主題時，它會先提醒你英文來源可能比較少，並說 X 和 YouTube 是最能補中文內容的來源。</li><li>中文主題結果太少時，換成英文關鍵字再搜一次（例：「露營新手」改成 camping beginner）。</li><li>要結果用中文看，在句子最後加「用繁體中文整理」。</li></ul></section><section class="page"><div class="head"><div class="num">07</div><div class="label">常見問題</div><h2>卡住先看這裡</h2></div><ul><li><strong>要付錢嗎？</strong> 只用 Reddit、Hacker News、Polymarket、GitHub、YouTube 是 0 元。開 TikTok、IG、Threads 要申請 ScrapeCreators，前 10,000 次免費，之後付費；Perplexity 要付費。</li><li><strong>打 <code>/last30days</code> 沒反應？</strong> 多半是漏了 <code>/plugin install last30days</code>，回去做「① Mac／Windows 安裝步驟」步驟 5。</li><li><strong>跑到一半說要 Python 3.12？</strong> 照「① Mac／Windows 安裝步驟」步驟 1、2 裝好，重開終端機和 Claude Code 再試。</li><li><strong>結果是 0 筆？</strong> 它自己會註明「來源失敗不代表沒有討論」。可能是網路連不上那個來源，也可能是中文主題討論少，換英文關鍵字試試。</li><li><strong>資料存在哪？</strong> 「文件」裡的 <code>Last30Days</code>、家目錄的 <code>.config/last30days</code>、<code>.local/share/last30days</code>（隱藏資料夾，Finder 按 Cmd＋Shift＋. 才看得到）。</li><li><strong>會不會自己更新？</strong> 會。用外掛市集裝的版本會自動更新，所以之後的版本我們沒有檢查過。</li></ul></section><section class="page"><div class="head"><div class="num">08</div><div class="label">安全</div><h2>用之前要知道的事</h2></div><ul><li><strong>讀登入資料要你同意才會做</strong>：它能讀瀏覽器裡 X、Reddit 的登入資料（cookie），預設是關的，設定時同意才開。我們看過程式碼：只挑 x.com、reddit.com 那幾個值，只送回 x.com、reddit.com。不確定就不要開。</li><li><strong>你的主題會送到每個你開的來源</strong>：Reddit、YouTube、GitHub 這些搜尋網站都會收到你搜的主題；電腦裡有 OpenAI 等金鑰時，主題和片段也會送去那家。官方說除此之外不會送出資料，「No tracking. No analytics.」（不追蹤、不做使用統計）。不要搜公司機密或客戶名字。</li><li><strong>它會自動裝東西、自己更新</strong>：Auto setup 會裝 yt-dlp 和作者另一個套件的小工具（我們沒審過）；外掛市集版會自動更新，我們檢查的是 2026-11-18 的版本。</li><li><strong>不要開 Grok 路線</strong>：那條路線會用跳過權限詢問的模式跑別的程式。</li><li><strong><code>--publish</code> 會公開</strong>：官方說加了 <code>--publish</code> 才會把結果上傳成網頁，而且「public by default」（預設公開）。不想公開就不要加。</li><li>安全掃描只能抓已知的手法，判 🟡 不代表沒有風險；有疑慮就先只用免費來源、全部按不要。</li></ul>
+<div class="box warn"><p>⚠️ 授權是 MIT，作者 mvanhorn，可以免費用、可以商用，保留授權聲明就好。搜到的貼文和留言是別人寫的，拿來做內容時要自己改寫、標出處，不要整段搬。</p></div></section><section class="page"><div class="head"><div class="num">09</div><div class="label">出處</div><h2>資料從哪裡來</h2></div><ul><li>原專案官方說明（README、SECURITY.md、CONFIGURATION.md）：在 GitHub 搜尋 <code>mvanhorn/last30days-skill</code></li><li>試了再說安全檢查與工具測試紀錄（2026-11-18）</li></ul></section><p class="foot">卡在哪一步，直接回到貼文留言，我們一則一則回。<br>試了再說｜整理自官方文件與原專案，引用請標示出處</p></main><script>document.querySelectorAll('.cp').forEach(b=>b.onclick=()=>{const t=b.parentNode.querySelector('pre').innerText;
+const done=m=>{b.textContent=m;setTimeout(()=>b.textContent='複製',1500)};
+try{navigator.clipboard.writeText(t).then(()=>done('已複製'),()=>{sel(b);done('已選取，按複製')})}catch(e){sel(b);done('已選取，按複製')}});
+document.querySelectorAll('.page img').forEach(i=>i.onclick=()=>{const o=document.createElement('div');o.className='zoom';
+const z=document.createElement('img');z.src=i.src;z.alt=i.alt;o.append(z);o.onclick=()=>o.remove();document.body.append(o)});
+function sel(b){const r=document.createRange();r.selectNodeContents(b.parentNode.querySelector('pre'));const s=getSelection();s.removeAllRanges();s.addRange(r)}</script></body></html>
