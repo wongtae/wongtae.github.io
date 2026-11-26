@@ -1,0 +1,153 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>看懂你的店在地圖上輸在哪</title><meta name="claude:viewport-fit-sides" content="cover"><meta name="packet-version" content="v1｜2026-11-17｜整理自工具測試和官方文件"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@300;500;700;900&family=IBM+Plex+Mono:wght@500&display=swap"><style>
+/* 版面：精裝手冊。墨綠封面配黃銅細線，內頁石色紙、明體標題、大號黃銅章節數字 */
+:root{--bg:#e8e6e1;--paper:#f7f6f2;--ink:#1d2421;--mut:#68706b;--line:#d9d5cc;--hair:#c9c2b2;
+--deep:#1f2d27;--on-deep:#ece6d8;--brass:#a8884f;--brass-ink:#7d6332;
+--warn-bg:#f3eadb;--warn:#9a5b22;--tip-bg:#e7ece6;--tip:#4c6b58;--code-bg:#1a2420;--code:#e3ded2;
+--display:"Noto Serif TC","Songti TC",serif;--body:"Noto Sans TC",-apple-system,"PingFang TC",sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+--shadow:0 1px 2px #1d24210f,0 12px 32px -18px #1d242140}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1311;--paper:#161c19;--ink:#e6e1d6;--mut:#9a9f99;--line:#2a322e;--hair:#4a4636;
+--deep:#1b2722;--on-deep:#ece6d8;--brass:#c6a76b;--brass-ink:#d4b77d;--warn-bg:#2c2318;--warn:#d9a066;--tip-bg:#1a2620;--tip:#8fb39c;--code-bg:#0b0f0d;--code:#e3ded2;
+--shadow:0 1px 2px #0006,0 12px 32px -18px #000a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1311;--paper:#161c19;--ink:#e6e1d6;--mut:#9a9f99;--line:#2a322e;--hair:#4a4636;
+--deep:#1b2722;--on-deep:#ece6d8;--brass:#c6a76b;--brass-ink:#d4b77d;--warn-bg:#2c2318;--warn:#d9a066;--tip-bg:#1a2620;--tip:#8fb39c;--code-bg:#0b0f0d;--code:#e3ded2;
+--shadow:0 1px 2px #0006,0 12px 32px -18px #000a;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.85 var(--body);-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding-block:28px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;grid-template-columns:minmax(0,1fr);gap:22px}
+.page{background:var(--paper);border-radius:3px;padding:52px 56px 48px;box-shadow:var(--shadow);min-width:0}
+/* 封面 */
+.cover{background:var(--deep);color:var(--on-deep);padding:20px;position:relative}
+.frame{border:1px solid var(--brass);padding:40px 38px 30px;position:relative}
+.frame::after{content:"";position:absolute;inset:5px;border:1px solid color-mix(in srgb,var(--brass) 45%,transparent);pointer-events:none}
+.brand{display:flex;justify-content:space-between;gap:12px;font:500 11px/1 var(--mono);letter-spacing:.28em;color:var(--brass);text-transform:uppercase}
+.cover h1{font:900 clamp(30px,5.6vw,46px)/1.3 var(--display);margin:56px 0 14px;letter-spacing:.02em;word-break:keep-all;overflow-wrap:anywhere}
+.cover .sub{font-size:16px;line-height:1.8;color:color-mix(in srgb,var(--on-deep) 78%,transparent);margin:0;max-width:34em}
+.rule{display:flex;align-items:center;gap:12px;margin:40px 0 6px;font:500 11px var(--mono);letter-spacing:.28em;color:var(--brass)}
+.rule::after{content:"";flex:1;height:1px;background:var(--brass);opacity:.6}
+.gets{list-style:none;padding:0;margin:0 0 30px}
+.gets li{display:grid;grid-template-columns:2.6em 1fr;align-items:baseline;padding:13px 0;border-bottom:1px solid color-mix(in srgb,var(--brass) 35%,transparent);font:700 17px/1.5 var(--display);letter-spacing:.02em}
+.gets b{font:500 12px var(--mono);color:var(--brass);letter-spacing:.1em}
+.route{font-size:13.5px;color:color-mix(in srgb,var(--on-deep) 70%,transparent);margin:0 0 26px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 22px;font:500 11.5px/1.6 var(--mono);letter-spacing:.06em;color:color-mix(in srgb,var(--on-deep) 62%,transparent);padding-top:16px;border-top:1px solid color-mix(in srgb,var(--brass) 35%,transparent)}
+.meta .kw{color:var(--brass)}
+/* 章節 */
+.head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 22px;align-items:end;padding-bottom:22px;margin-bottom:26px;border-bottom:1px solid var(--hair)}
+.num{grid-row:span 2;font:300 64px/0.9 var(--display);color:var(--brass);font-variant-numeric:lining-nums}
+.label{font:500 11.5px var(--mono);letter-spacing:.24em;color:var(--brass-ink)}
+h2{font:900 26px/1.4 var(--display);margin:0;letter-spacing:.02em;word-break:keep-all;overflow-wrap:anywhere}
+h3{font:700 18px/1.5 var(--display);margin:34px 0 10px;letter-spacing:.02em}
+p,li{max-width:38em}
+p{margin:0 0 14px}
+strong{font-weight:700;color:var(--ink);background:linear-gradient(transparent 62%,color-mix(in srgb,var(--brass) 26%,transparent) 0)}
+a{color:var(--brass-ink);text-decoration-thickness:1px;text-underline-offset:3px;word-break:break-all}
+a:focus-visible,.cp:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+code{font:.86em var(--mono);background:color-mix(in srgb,var(--brass) 12%,transparent);padding:1px 6px;border-radius:2px;word-break:break-all}
+ul,ol{padding-left:1.4em}
+li{margin:4px 0}
+ol li::marker{font:500 .85em var(--mono);color:var(--brass-ink)}
+ul li::marker{color:var(--brass)}
+.code,.ai{position:relative;margin:18px 0;min-width:0}
+.code pre{background:var(--code-bg);color:var(--code);padding:20px 22px;border-radius:2px;overflow-x:auto;font:13px/1.7 var(--mono);margin:0}
+.ai{border-top:1px solid var(--brass);border-bottom:1px solid var(--brass);padding:34px 4px 18px;background:transparent}
+.ai::before{content:"直接跟 AI 說";position:absolute;top:12px;left:4px;font:500 11px var(--mono);color:var(--brass-ink);letter-spacing:.24em}
+.ai pre{margin:0;white-space:pre-wrap;font:500 16px/1.85 var(--display);color:var(--ink)}
+.cp{position:absolute;top:8px;right:6px;font:500 11px var(--mono);letter-spacing:.12em;border:1px solid var(--hair);background:var(--paper);color:var(--ink);border-radius:2px;padding:4px 12px;cursor:pointer}
+.cp:hover{border-color:var(--brass)}
+.code .cp{background:transparent;color:var(--code);border-color:#ffffff30;top:10px;right:10px}
+.box{padding:16px 20px;margin:18px 0;border-radius:2px}
+.box p{margin:4px 0}
+.warn{background:var(--warn-bg);box-shadow:inset 2px 0 var(--warn)}
+.tip{background:var(--tip-bg);box-shadow:inset 2px 0 var(--tip)}
+.test{background:transparent;border:1px dashed var(--brass);padding-top:34px;position:relative}
+.test::before{content:"我們的實測 · 待補";position:absolute;top:12px;left:20px;font:500 11px var(--mono);color:var(--brass-ink);letter-spacing:.24em}
+.test.done{border-style:solid}
+.test.done::before{content:"我們的實測"}
+.box img{display:block;margin:12px 0 4px;border:1px solid var(--hair)}
+.page img{cursor:zoom-in}
+.cap{display:block;font-size:12.5px;color:var(--mut);margin:0 0 6px}
+.zoom{position:fixed;inset:0;z-index:9;background:#000000e0;overflow:auto;padding:16px;cursor:zoom-out;display:flex}
+.zoom img{max-width:none;margin:auto;border-radius:2px}
+blockquote{margin:18px 0;padding:2px 0 2px 20px;border-left:1px solid var(--brass);color:var(--mut)}
+.tw{overflow-x:auto;margin:18px 0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.7}
+th,td{border-bottom:1px solid var(--line);padding:11px 12px;text-align:left;vertical-align:top}
+thead th{font:500 11px var(--mono);color:var(--brass-ink);letter-spacing:.18em;border-bottom:1px solid var(--ink)}
+td:first-child{font-weight:700}
+ul.check{list-style:none;padding-left:0}
+ul.check li{position:relative;padding-left:28px}
+ul.check li::before{content:"";position:absolute;left:0;top:.55em;width:14px;height:14px;border:1px solid var(--brass)}
+img{max-width:100%;border-radius:2px}
+.foot{text-align:center;color:var(--mut);font-size:12.5px;line-height:2;margin-top:18px;letter-spacing:.04em}
+.foot::before{content:"";display:block;width:40px;height:1px;background:var(--brass);margin:0 auto 18px}
+@media (max-width:640px){.page{padding:34px 22px 30px}.cover{padding:12px}.frame{padding:28px 20px 22px}.cover h1{margin-top:40px}.num{font-size:48px}h2{font-size:22px}}
+@media print{body{background:#fff;font-size:13.5px}.wrap{max-width:none;padding:0;display:block}.page{box-shadow:none;border-radius:0;margin:0;break-after:page;padding:30px 36px}
+.cp{display:none}.cover{min-height:96vh;display:flex}.frame{flex:1}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}@page{size:A4;margin:10mm}}
+</style></head><body><main class="wrap"><section class="page cover"><div class="frame"><div class="brand"><span>試了再說 · Package</span></div><h1>看懂你的店在地圖上輸在哪</h1><p class="sub">32 個免費行銷 skill，只裝 skill 不裝掛鉤、叫它講台灣話，拿你的店跟 Google 地圖前三名比</p><div class="rule">這份 Package 裡有</div><ul class='gets'><li><b>①</b>5 個指令中文對照表</li><li><b>②</b>只裝 skill 的安全安裝步驟</li><li><b>③</b>叫它講繁中和台灣用語的說法</li></ul><p class="route">重點 → 先懂 → 準備 → ② 安裝 → ① 指令對照 → ③ 講台灣話 → 安全</p><div class="meta"><span>5 分鐘看完</span></div></div></section><section class="page"><div class="head"><div class="num">01</div><div class="label">重點</div><h2>看完你會帶走什麼</h2></div><div class="box tip"><p>💡 <strong>這包 skill 免費拿得到，但要「只裝 skill、叫它講繁中、自己截地圖前三名」，它才幫得上台灣小店。</strong></p></div>
+<h3>它幫你省掉什麼</h3>
+<ul><li><strong>不用自己猜輸在哪</strong>：官方說 <code>google-business-profile</code> 會拿你的 Google 商家檔案跟地圖前三名比，再寫一個月的商家貼文。</li><li><strong>評論回覆不用從零想</strong>：官方說 <code>reviews</code> 會寫老闆回覆，也會設計服務後請客人留評論的做法。</li><li><strong>不用先付錢</strong>：官方寫明每個 skill 不用付費工具也能跑；API key（讓程式連上別家服務的通行碼）全部是選用。</li></ul>
+<h3>裝之前先知道 3 件事</h3>
+<ol><li><strong>只裝 skill 資料夾</strong>：照「② 只裝 skill 的安全安裝步驟」做，不要用 plugin（外掛）安裝。plugin 版會多掛一個 hook（自動攔截的掛鉤），每次 AI 寫檔、跑指令都會被它檢查一遍。</li><li><strong>第一句就叫它講繁中</strong>：它預設是英文、範例是美國店家，沒有語言設定。「③ 叫它講繁中和台灣用語的說法」有整段可以照抄。</li><li><strong>地圖前三名要你自己截圖</strong>：skill 文件自己寫明網頁搜尋通常抓不到地圖結果，免費做法是你用手機搜尋、截圖給它。</li></ol>
+<h3>我們檢查過什麼</h3>
+<ul><li>安全掃描判 🟡：沒發現已知的惡意手法，要注意的是 plugin 掛鉤、選用的 API key 會把資料送到第三方。</li><li>只複製 skills 資料夾的裝法，在隔離的測試資料夾裡照步驟裝成功，32 個資料夾都在，<code>.claude</code> 裡只有 <code>skills</code>，沒有掛鉤和設定檔。</li><li>AI 寫出來的比較、回覆和貼文都是草稿，送出前一定要自己看過。</li></ul>
+<div class="box warn"><p>⚠️ 最容易踩的坑：照 README 第一個看到的指令用 plugin 裝，或把 API key 一次填滿。詳細在「② 只裝 skill 的安全安裝步驟」和「安全與授權」。</p></div></section><section class="page"><div class="head"><div class="num">02</div><div class="label">先懂</div><h2>它是什麼</h2></div><p>skill 是一份教 AI 照步驟做事的說明書，放進 Claude Code（Anthropic 出的、在終端機裡用的 AI 助手）的 <code>.claude/skills/</code> 資料夾，打 <code>/skill 名稱</code> 就能叫出來，AI 也會在用得到時自己拿出來用（<a href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener">官方文件：Skills</a>）。</p>
+<ul><li>沒有它：你跟 AI 說「幫我做行銷」，它給你一份通用建議，每家店都一樣。</li><li>有它：先跑 <code>/start-here</code>，它讀你的網站和評論、寫出你的品牌檔（店的語氣、客人、賣點），之後每個 skill 都照這份品牌檔寫。</li><li>官方說：32 個 skill，分成被找到（Google 商家、在地頁面、SEO）、被選上（評論、首頁）、接到電話（廣告）、回頭客（電子報）、接案（找在地客戶）、自己的社群貼文（X 和 LinkedIn）。</li><li>授權：MIT，可以用在自己的店、客戶或產品。</li></ul></section><section class="page"><div class="head"><div class="num">03</div><div class="label">準備</div><h2>開始前確認這 5 件事</h2></div><ul class="check"><li>一台 Mac（下面的指令都是 Mac 終端機寫法；Windows 看下面的說明）</li><li>已經裝好、能登入的 Claude Code</li><li>你的店的網站或粉專網址、最近的 Google 評論</li><li>手機：搜尋「[你的行業] [你的地區]」，把地圖前三名的商家頁截圖</li><li>費用：skill 本身 0 元；Claude Code 照你自己的方案計費；API key 先全部不填</li></ul>
+<h3>用 Windows 的話</h3>
+<p>官方 README 沒有分作業系統，也沒有寫 Windows 裝法。下一章的 <code>mkdir</code>、<code>cp</code>、<code>ls</code> 是 Mac 終端機的寫法，Windows 不能直接照抄。Claude Code 官方文件只寫了 skill 要放在專案的 <code>.claude/skills/&lt;skill名稱&gt;/</code> 資料夾，沒有另外寫 Windows 的步驟。我們用的是 Mac，Windows 沒有自己試過，要裝請先小心確認。</p></section><section class="page"><div class="head"><div class="num">04</div><div class="label"></div><h2>② 只裝 skill 的安全安裝步驟</h2></div><p>這個裝法只把 skill 放進一個資料夾，只有在這個資料夾開 Claude Code 才會用到，不影響你其他專案。</p>
+<ol><li><strong>（必做）確認是本尊</strong>：在 GitHub 搜尋 <code>boringmarketer/boring-marketing-skills</code>，確認作者帳號是 boringmarketer、授權寫 MIT。名字很像但帳號不同的，不要下載。</li><li>在專案頁按綠色「Code」→「Download ZIP」，解壓縮。以下假設解到「下載」資料夾，名稱是 <code>boring-marketing-skills-main</code>。 - 注意：GitHub 的 ZIP 解開後，資料夾名稱會多出 <code>-main</code>；下載兩次可能變成 <code>boring-marketing-skills-main 2</code>。指令裡的名稱要跟你「下載」資料夾裡實際看到的一樣。</li><li>建一個放你店資料的資料夾和 skill 資料夾（<code>~/my-shop</code> 是範例，可以換成你想要的名字，後面指令也要一起換）：</li></ol>
+<div class="code"><button class="cp">複製</button><pre>mkdir -p ~/my-shop/.claude/skills</pre></div>
+<p>   - <code>.claude</code> 是點開頭的隱藏資料夾，Finder 裡預設看不到。想在 Finder 看到，按 Cmd＋Shift＋.（句點）；或在終端機輸入 <code>ls -a ~/my-shop</code>。</p>
+<ol><li>只複製 skills 裡的 32 個資料夾（不要複製 <code>.claude-plugin</code>、<code>automations</code>）：</li></ol>
+<div class="code"><button class="cp">複製</button><pre>cp -R ~/Downloads/boring-marketing-skills-main/skills/. ~/my-shop/.claude/skills/</pre></div>
+<p>   - 怎麼確認成功：輸入下面這行，看到 <code>32</code> 就對了。</p>
+<div class="code"><button class="cp">複製</button><pre>ls ~/my-shop/.claude/skills | wc -l</pre></div>
+<p>   - 卡住怎麼辦：顯示「No such file or directory」，通常是解壓縮的資料夾名稱或位置不一樣，打開「下載」資料夾看實際名稱，改掉指令裡的 <code>boring-marketing-skills-main</code>。</p>
+<p>   - 看到的數字是 <code>1</code>：代表指令最後的 <code>/.</code> 漏掉了，skill 多包了一層，Claude Code 會找不到。把整行照上面重打一次。</p>
+<ol><li>進資料夾開 Claude Code：</li></ol>
+<div class="code"><button class="cp">複製</button><pre>cd ~/my-shop &amp;&amp; claude</pre></div>
+<p>   - 第一次在這個資料夾開 Claude Code，會先問你信不信任這個資料夾，這是你自己建的資料夾，選 Yes。</p>
+<ol><li>輸入第一句（「③ 叫它講繁中和台灣用語的說法」有完整版）：</li></ol>
+<div class="code"><button class="cp">複製</button><pre>/start-here 你的店名
+全程用繁體中文、台灣用語回答，範例換成台灣的店。</pre></div>
+<ol><li><strong>（必做）不要用這三種</strong>： - 不要用 <code>/plugin marketplace add …</code>、<code>/plugin install …</code>：會掛上攔截每次寫檔和跑指令的 hook。 - 不要跑專案裡的 <code>_system/scripts/install.sh</code>：它會裝進 <code>~/.claude/skills</code>，你電腦上所有專案都會被影響。</li></ol>
+<h3>不想用了怎麼移除</h3>
+<p>這個裝法只動到 <code>~/my-shop/.claude/skills/</code> 這個資料夾。不想用了，把它刪掉就好；<code>~/my-shop</code> 裡如果有它幫你寫的品牌檔，要不要留你自己決定。下載的 ZIP 和解開的資料夾在「下載」裡，也可以一起刪。</p></section><section class="page"><div class="head"><div class="num">05</div><div class="label"></div><h2>① 5 個指令中文對照表</h2></div><p>除了 <code>/start-here</code>，下面的叫法都是照官方說明寫的範本，方括號 [ ] 裡的字換成你自己的。每一句後面都可以加「全程用繁體中文、台灣用語」。</p>
+<h3>1. /start-here｜第一次一定先跑</h3>
+<ul><li>白話：讀你的網站和評論，寫出品牌檔，再告訴你下一步用哪個 skill。</li></ul>
+<div class="ai"><button class="cp">複製</button><pre>/start-here [你的店名]
+我的網站是 [網址]，Google 商家名稱是 [名稱]。全程用繁體中文、台灣用語回答。</pre></div>
+<h3>2. /google-business-profile｜想知道地圖上輸給誰</h3>
+<ul><li>白話：拿你的 Google 商家檔案跟地圖前三名比，列出該改的地方，寫一個月的商家貼文。</li></ul>
+<div class="ai"><button class="cp">複製</button><pre>/google-business-profile
+我附上用手機搜尋「[你的行業] [地區]」的地圖前三名截圖。請拿我的商家檔案跟這三家逐項比，列出我少了什麼、先改哪 3 個，最後寫一個月的商家貼文。</pre></div>
+<h3>3. /reviews｜評論不知道怎麼回</h3>
+<ul><li>白話：幫你寫老闆回覆，設計服務完請客人留評論的說法。</li></ul>
+<div class="ai"><button class="cp">複製</button><pre>/reviews
+以下是我最近 10 則 Google 評論。每則寫一段老闆回覆：口氣像台灣小店老闆、不超過 80 字；負評先道歉再說明怎麼改善，不要承諾做不到的事。</pre></div>
+<h3>4. /social-content｜X、LinkedIn 貼文想不出來</h3>
+<ul><li>白話：照你自己表現最好的貼文口氣，寫新的 X（原本的推特）和 LinkedIn（職場社群）貼文。</li><li>注意：官方說明寫的是 X 和 LinkedIn，沒有寫 IG／FB。Google 商家貼文請用上面的 <code>/google-business-profile</code>。</li><li>官方建議先貼 10 到 30 則你自己表現最好的舊貼文，沒有舊貼文就給它 3 到 5 個真實的數字或成果。</li></ul>
+<div class="ai"><button class="cp">複製</button><pre>/social-content
+這是我過去表現最好的 10 則貼文：[貼上文字]。照這個口氣寫 4 週、每週 2 則的 X 和 LinkedIn 貼文，不要用誇大效果的字眼。</pre></div>
+<h3>5. /competitive-intel｜想知道對手被客人抱怨什麼</h3>
+<ul><li>白話：看搜尋時最先出現的幾家，整理他們的客人在抱怨什麼。</li></ul>
+<div class="ai"><button class="cp">複製</button><pre>/competitive-intel
+幫我看搜尋「[你的行業] [地區]」時最先出現的幾家，整理他們的客人最常抱怨什麼，我可以怎麼做得不一樣。</pre></div></section><section class="page"><div class="head"><div class="num">06</div><div class="label"></div><h2>③ 叫它講繁中和台灣用語的說法</h2></div><p>skill 本身沒有語言設定，要你自己講清楚。第一次跑 <code>/start-here</code> 時整段貼上：</p>
+<div class="ai"><button class="cp">複製</button><pre>全程用繁體中文、台灣用語回答。
+範例換成台灣的店，金額用新台幣，地址和電話用台灣格式。
+不要用簡體字和中國用語，例如：視頻→影片、質量→品質、信息→訊息、用戶→使用者。
+請把「一律用繁體中文、台灣用語」寫進品牌檔的語氣規則。</pre></div>
+<p>如果中途又跑出英文，直接說：</p>
+<div class="ai"><button class="cp">複製</button><pre>剛剛那段改成繁體中文、台灣用語，口氣像在跟熟客講話。</pre></div></section><section class="page"><div class="head"><div class="num">07</div><div class="label">常見問題</div><h2>卡住先看這裡</h2></div><ul><li>問：一定要填 API key 嗎？</li></ul>
+<p>  - 答：不用。官方寫明每個 skill 不用付費工具也能跑，key 全部是選用。</p>
+<ul><li>問：它可以自己抓 Google 地圖前三名嗎？</li></ul>
+<p>  - 答：免費做法不行。skill 文件寫明網頁搜尋通常抓不到地圖結果，要你用手機搜尋、截圖給它。</p>
+<ul><li>問：為什麼它一直講英文？</li></ul>
+<p>  - 答：它的內容和範例都是英文、美國店家，沒有語言設定。照「③ 叫它講繁中和台灣用語的說法」在第一句講清楚。</p>
+<ul><li>問：裝在哪裡比較好？</li></ul>
+<p>  - 答：裝在專案資料夾的 <code>.claude/skills/</code>（「② 只裝 skill 的安全安裝步驟」的做法），只有在那個資料夾開 Claude Code 才會用到。</p>
+<ul><li>問：Finder 裡找不到 <code>.claude</code> 資料夾？</li></ul>
+<p>  - 答：點開頭的資料夾是隱藏的，按 Cmd＋Shift＋.（句點）就看得到。</p></section><section class="page"><div class="head"><div class="num">08</div><div class="label">安全與授權</div><h2>裝之前看一眼</h2></div><ul><li><strong>選用的 API key 會把資料送到第三方</strong>：填了以後，資料會送到 Firecrawl（網頁抓取）、Google（Places 要開 Google Cloud 帳單）、Meta、Replicate／OpenAI（生圖按次付費）。用不到就不要填。</li><li><strong>plugin 安裝會掛 hook</strong>：會攔截每一次寫檔和跑指令，用途是防止寫錯客戶資料夾，純本機、不連網，但一般小店用不到，照「② 只裝 skill 的安全安裝步驟」只裝 skill 就好。</li><li><strong>它會自己更新參考檔</strong>：有些 skill 的參考資料過期時，會叫 AI 上網查、改寫 skill 自己的檔案。網頁內容可能混進奇怪的指令，看到它說要更新參考檔時，先看它改了什麼。</li><li><strong>客人個資不要貼進去</strong>：貼評論可以，但客人的電話、地址、訂單資料不要貼。</li><li><strong>AI 寫的是草稿</strong>：評論回覆和貼文送出前自己看一遍，價格、營業時間、優惠內容一定要自己對過。</li><li>專案 2026-11-16 才建立，作者在說明裡推自己的付費工具和顧問服務（有標明，不買也能用全部 skill）。安全掃描只能抓已知手法，不代表沒有風險。</li><li>授權：MIT，可以商用，轉發 skill 檔案時要保留原作者的授權聲明。</li></ul></section><section class="page"><div class="head"><div class="num">09</div><div class="label"></div><h2>出處</h2></div><ul><li>原專案說明（README）：在 GitHub 搜尋 boringmarketer/boring-marketing-skills</li><li><a href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener">Claude Code 官方文件：Skills</a>（skill 放在 <code>.claude/skills/</code>、打 <code>/名稱</code> 叫出來）</li><li>試了再說工具測試與安全檢查（2026-11-17）</li></ul></section><p class="foot">卡在哪一步，直接回到貼文留言，我們一則一則回。<br>試了再說｜整理自官方文件與原專案，引用請標示出處</p></main><script>document.querySelectorAll('.cp').forEach(b=>b.onclick=()=>{const t=b.parentNode.querySelector('pre').innerText;
+const done=m=>{b.textContent=m;setTimeout(()=>b.textContent='複製',1500)};
+try{navigator.clipboard.writeText(t).then(()=>done('已複製'),()=>{sel(b);done('已選取，按複製')})}catch(e){sel(b);done('已選取，按複製')}});
+document.querySelectorAll('.page img').forEach(i=>i.onclick=()=>{const o=document.createElement('div');o.className='zoom';
+const z=document.createElement('img');z.src=i.src;z.alt=i.alt;o.append(z);o.onclick=()=>o.remove();document.body.append(o)});
+function sel(b){const r=document.createRange();r.selectNodeContents(b.parentNode.querySelector('pre'));const s=getSelection();s.removeAllRanges();s.addRange(r)}</script></body></html>
