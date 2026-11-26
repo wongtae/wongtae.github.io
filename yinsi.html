@@ -1,0 +1,134 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>關掉紀錄前，先看這 3 件事</title><meta name="claude:viewport-fit-sides" content="cover"><meta name="packet-version" content="v1｜2026-11-18｜整理自工具測試和官方文件"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@300;500;700;900&family=IBM+Plex+Mono:wght@500&display=swap"><style>
+/* 版面：精裝手冊。墨綠封面配黃銅細線，內頁石色紙、明體標題、大號黃銅章節數字 */
+:root{--bg:#e8e6e1;--paper:#f7f6f2;--ink:#1d2421;--mut:#68706b;--line:#d9d5cc;--hair:#c9c2b2;
+--deep:#1f2d27;--on-deep:#ece6d8;--brass:#a8884f;--brass-ink:#7d6332;
+--warn-bg:#f3eadb;--warn:#9a5b22;--tip-bg:#e7ece6;--tip:#4c6b58;--code-bg:#1a2420;--code:#e3ded2;
+--display:"Noto Serif TC","Songti TC",serif;--body:"Noto Sans TC",-apple-system,"PingFang TC",sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+--shadow:0 1px 2px #1d24210f,0 12px 32px -18px #1d242140}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1311;--paper:#161c19;--ink:#e6e1d6;--mut:#9a9f99;--line:#2a322e;--hair:#4a4636;
+--deep:#1b2722;--on-deep:#ece6d8;--brass:#c6a76b;--brass-ink:#d4b77d;--warn-bg:#2c2318;--warn:#d9a066;--tip-bg:#1a2620;--tip:#8fb39c;--code-bg:#0b0f0d;--code:#e3ded2;
+--shadow:0 1px 2px #0006,0 12px 32px -18px #000a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1311;--paper:#161c19;--ink:#e6e1d6;--mut:#9a9f99;--line:#2a322e;--hair:#4a4636;
+--deep:#1b2722;--on-deep:#ece6d8;--brass:#c6a76b;--brass-ink:#d4b77d;--warn-bg:#2c2318;--warn:#d9a066;--tip-bg:#1a2620;--tip:#8fb39c;--code-bg:#0b0f0d;--code:#e3ded2;
+--shadow:0 1px 2px #0006,0 12px 32px -18px #000a;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.85 var(--body);-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding-block:28px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;grid-template-columns:minmax(0,1fr);gap:22px}
+.page{background:var(--paper);border-radius:3px;padding:52px 56px 48px;box-shadow:var(--shadow);min-width:0}
+/* 封面 */
+.cover{background:var(--deep);color:var(--on-deep);padding:20px;position:relative}
+.frame{border:1px solid var(--brass);padding:40px 38px 30px;position:relative}
+.frame::after{content:"";position:absolute;inset:5px;border:1px solid color-mix(in srgb,var(--brass) 45%,transparent);pointer-events:none}
+.brand{display:flex;justify-content:space-between;gap:12px;font:500 11px/1 var(--mono);letter-spacing:.28em;color:var(--brass);text-transform:uppercase}
+.cover h1{font:900 clamp(30px,5.6vw,46px)/1.3 var(--display);margin:56px 0 14px;letter-spacing:.02em;word-break:keep-all;overflow-wrap:anywhere}
+.cover .sub{font-size:16px;line-height:1.8;color:color-mix(in srgb,var(--on-deep) 78%,transparent);margin:0;max-width:34em}
+.rule{display:flex;align-items:center;gap:12px;margin:40px 0 6px;font:500 11px var(--mono);letter-spacing:.28em;color:var(--brass)}
+.rule::after{content:"";flex:1;height:1px;background:var(--brass);opacity:.6}
+.gets{list-style:none;padding:0;margin:0 0 30px}
+.gets li{display:grid;grid-template-columns:2.6em 1fr;align-items:baseline;padding:13px 0;border-bottom:1px solid color-mix(in srgb,var(--brass) 35%,transparent);font:700 17px/1.5 var(--display);letter-spacing:.02em}
+.gets b{font:500 12px var(--mono);color:var(--brass);letter-spacing:.1em}
+.route{font-size:13.5px;color:color-mix(in srgb,var(--on-deep) 70%,transparent);margin:0 0 26px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 22px;font:500 11.5px/1.6 var(--mono);letter-spacing:.06em;color:color-mix(in srgb,var(--on-deep) 62%,transparent);padding-top:16px;border-top:1px solid color-mix(in srgb,var(--brass) 35%,transparent)}
+.meta .kw{color:var(--brass)}
+/* 章節 */
+.head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 22px;align-items:end;padding-bottom:22px;margin-bottom:26px;border-bottom:1px solid var(--hair)}
+.num{grid-row:span 2;font:300 64px/0.9 var(--display);color:var(--brass);font-variant-numeric:lining-nums}
+.label{font:500 11.5px var(--mono);letter-spacing:.24em;color:var(--brass-ink)}
+h2{font:900 26px/1.4 var(--display);margin:0;letter-spacing:.02em;word-break:keep-all;overflow-wrap:anywhere}
+h3{font:700 18px/1.5 var(--display);margin:34px 0 10px;letter-spacing:.02em}
+p,li{max-width:38em}
+p{margin:0 0 14px}
+strong{font-weight:700;color:var(--ink);background:linear-gradient(transparent 62%,color-mix(in srgb,var(--brass) 26%,transparent) 0)}
+a{color:var(--brass-ink);text-decoration-thickness:1px;text-underline-offset:3px;word-break:break-all}
+a:focus-visible,.cp:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+code{font:.86em var(--mono);background:color-mix(in srgb,var(--brass) 12%,transparent);padding:1px 6px;border-radius:2px;word-break:break-all}
+ul,ol{padding-left:1.4em}
+li{margin:4px 0}
+ol li::marker{font:500 .85em var(--mono);color:var(--brass-ink)}
+ul li::marker{color:var(--brass)}
+.code,.ai{position:relative;margin:18px 0;min-width:0}
+.code pre{background:var(--code-bg);color:var(--code);padding:20px 22px;border-radius:2px;overflow-x:auto;font:13px/1.7 var(--mono);margin:0}
+.ai{border-top:1px solid var(--brass);border-bottom:1px solid var(--brass);padding:34px 4px 18px;background:transparent}
+.ai::before{content:"直接跟 AI 說";position:absolute;top:12px;left:4px;font:500 11px var(--mono);color:var(--brass-ink);letter-spacing:.24em}
+.ai pre{margin:0;white-space:pre-wrap;font:500 16px/1.85 var(--display);color:var(--ink)}
+.cp{position:absolute;top:8px;right:6px;font:500 11px var(--mono);letter-spacing:.12em;border:1px solid var(--hair);background:var(--paper);color:var(--ink);border-radius:2px;padding:4px 12px;cursor:pointer}
+.cp:hover{border-color:var(--brass)}
+.code .cp{background:transparent;color:var(--code);border-color:#ffffff30;top:10px;right:10px}
+.box{padding:16px 20px;margin:18px 0;border-radius:2px}
+.box p{margin:4px 0}
+.warn{background:var(--warn-bg);box-shadow:inset 2px 0 var(--warn)}
+.tip{background:var(--tip-bg);box-shadow:inset 2px 0 var(--tip)}
+.test{background:transparent;border:1px dashed var(--brass);padding-top:34px;position:relative}
+.test::before{content:"我們的實測 · 待補";position:absolute;top:12px;left:20px;font:500 11px var(--mono);color:var(--brass-ink);letter-spacing:.24em}
+.test.done{border-style:solid}
+.test.done::before{content:"我們的實測"}
+.box img{display:block;margin:12px 0 4px;border:1px solid var(--hair)}
+.page img{cursor:zoom-in}
+.cap{display:block;font-size:12.5px;color:var(--mut);margin:0 0 6px}
+.zoom{position:fixed;inset:0;z-index:9;background:#000000e0;overflow:auto;padding:16px;cursor:zoom-out;display:flex}
+.zoom img{max-width:none;margin:auto;border-radius:2px}
+blockquote{margin:18px 0;padding:2px 0 2px 20px;border-left:1px solid var(--brass);color:var(--mut)}
+.tw{overflow-x:auto;margin:18px 0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.7}
+th,td{border-bottom:1px solid var(--line);padding:11px 12px;text-align:left;vertical-align:top}
+thead th{font:500 11px var(--mono);color:var(--brass-ink);letter-spacing:.18em;border-bottom:1px solid var(--ink)}
+td:first-child{font-weight:700}
+ul.check{list-style:none;padding-left:0}
+ul.check li{position:relative;padding-left:28px}
+ul.check li::before{content:"";position:absolute;left:0;top:.55em;width:14px;height:14px;border:1px solid var(--brass)}
+img{max-width:100%;border-radius:2px}
+.foot{text-align:center;color:var(--mut);font-size:12.5px;line-height:2;margin-top:18px;letter-spacing:.04em}
+.foot::before{content:"";display:block;width:40px;height:1px;background:var(--brass);margin:0 auto 18px}
+@media (max-width:640px){.page{padding:34px 22px 30px}.cover{padding:12px}.frame{padding:28px 20px 22px}.cover h1{margin-top:40px}.num{font-size:48px}h2{font-size:22px}}
+@media print{body{background:#fff;font-size:13.5px}.wrap{max-width:none;padding:0;display:block}.page{box-shadow:none;border-radius:0;margin:0;break-after:page;padding:30px 36px}
+.cp{display:none}.cover{min-height:96vh;display:flex}.frame{flex:1}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}@page{size:A4;margin:10mm}}
+</style></head><body><main class="wrap"><section class="page cover"><div class="frame"><div class="brand"><span>試了再說 · Package</span></div><h1>關掉紀錄前，先看這 3 件事</h1><p class="sub">Gemini 關掉紀錄、開臨時對話，官方說都會留約 2 個月；照這份 10 分鐘檢查完設定，也知道哪些東西別貼</p><div class="rule">這份 Package 裡有</div><ul class='gets'><li><b>①</b>Gemini 隱私設定檢查步驟</li><li><b>②</b>不要貼進 AI 的資料清單</li><li><b>③</b>Gemini、ChatGPT、Claude 臨時對話保存天數對照表</li></ul><p class="route">重點 → 先懂 → ① 設定檢查 → ② 別貼清單 → ③ 三家對照</p><div class="meta"><span>10 分鐘看完、檢查完</span></div></div></section><section class="page"><div class="head"><div class="num">01</div><div class="label">重點</div><h2>看完你會帶走什麼</h2></div><div class="box tip"><p>💡 <strong>Gemini 照用沒問題，但「關掉紀錄」不等於「沒留下來」：合約、客戶資料、密碼不要貼。</strong></p></div>
+<h3>為什麼要在意</h3>
+<ul><li><strong>關掉紀錄，還是會留約 2 個月</strong>：Google 官方說明頁寫「即使關閉 Gemini 記錄，日後的對話仍會保留約 2 個月」。臨時對話也一樣留約 2 個月。</li><li><strong>以前是 72 小時</strong>：TechCrunch 對照 11 月 12 日的說明頁存檔，以前寫的是 72 小時，等於從 3 天拉長到 2 個月左右。</li><li><strong>被人工看過的，最多留 3 年</strong>：官方說明頁寫，經過人工審查的對話最多保留三年，而且你刪掉活動記錄，這些不會跟著刪。</li></ul>
+<h3>你要做的 3 件事</h3>
+<ol><li><strong>打開 Gemini 的活動記錄頁，看你現在是開還是關</strong>：照「① Gemini 隱私設定檢查步驟」做，5 分鐘內看完。</li><li><strong>找找看新的「訓練」開關</strong>：TechCrunch 報導，「留紀錄」和「拿去訓練 AI」拆成兩個設定，可以只留紀錄、不給訓練。官方說未來幾週全球陸續推出，你的帳號可能還沒看到。</li><li><strong>貼之前先換掉名字和數字</strong>：照「② 不要貼進 AI 的資料清單」，把客戶名、金額、帳號換成代號再問。</li></ol>
+<h3>常見誤會</h3>
+<ul><li><strong>「開臨時對話就不會留」</strong>：官方說臨時對話不會拿去訓練 AI，但一樣會保留約 2 個月。</li><li><strong>「貼完馬上刪掉就好」</strong>：一般對話刪掉會從你的紀錄消失；但如果那段已經被人工審查看過，官方說最多留 3 年，刪紀錄也不會跟著刪。</li><li><strong>「只有 Gemini 會留」</strong>：ChatGPT、Claude 的臨時對話也會留一段時間，天數不一樣，見「③ Gemini、ChatGPT、Claude 臨時對話保存天數對照表」。</li></ul>
+<div class="box warn"><p>⚠️ 最容易踩的坑：以為開了臨時對話就能放心貼合約。臨時對話也留約 2 個月，機密的東西不管開哪種模式都別貼。</p></div></section><section class="page"><div class="head"><div class="num">02</div><div class="label">先懂</div><h2>到底改了什麼</h2></div><p>一句話：<strong>Gemini 關掉紀錄之後，對話留下來的時間從 3 天變成 2 個月左右；同時「留紀錄」和「拿去訓練」分成兩個開關。</strong></p>
+<h3>以前 vs 現在</h3>
+<ul><li><strong>以前</strong>：關掉紀錄（或開臨時對話），對話留 72 小時（TechCrunch 引 11 月 12 日的說明頁存檔）。「留紀錄」和「拿去訓練」綁在同一個「保留活動記錄」開關，要嘛一起開、要嘛一起關。</li><li><strong>現在</strong>：關掉紀錄、開臨時對話，都會留約 2 個月（官方說明頁）。TechCrunch 報導，「留紀錄」和「拿去訓練 AI」拆成兩個設定，可以只留紀錄、不給訓練。</li><li><strong>原本就關掉的人</strong>：TechCrunch 報導，以前把「保留活動記錄」關掉的人，兩個新設定預設都是關的；原本開著的人，紀錄維持開著，訓練要自己另外決定。</li></ul>
+<h3>Google 為什麼要留這麼久</h3>
+<ul><li>官方說明頁寫，留下來是為了回覆你、處理意見回饋，以及保護 Google、使用者和一般大眾。</li><li>TechCrunch 引 Google 的說法：這次改是為了「在 AI 越來越強的時候提升安全」。Google 沒說是什麼事情讓它改，也沒說會不會影響誰能看到這些對話。</li></ul>
+<h3>台灣什麼時候改</h3>
+<ul><li>官方說「未來幾週」在 Gemini App 全球陸續推出，沒有特別寫台灣。所以你現在打開設定，看到的可能還是舊的一個開關，這是正常的。</li></ul></section><section class="page"><div class="head"><div class="num">03</div><div class="label">①</div><h2>Gemini 隱私設定檢查步驟</h2></div><p>電腦或手機的瀏覽器都可以做。先登入你平常用 Gemini 的那個 Google 帳號（有公司帳號和個人帳號的，兩個要分開檢查）。</p>
+<h3>步驟 1：打開 Gemini 的活動記錄頁</h3>
+<p>在瀏覽器網址列輸入官方說明頁給的位置：</p>
+<div class="code"><button class="cp">複製</button><pre>myactivity.google.com/product/gemini</pre></div>
+<ul><li><strong>怎麼確認成功</strong>：頁面最上面是 Gemini 的活動記錄，下面列出你以前的對話。</li><li><strong>卡住怎麼辦</strong>：如果要你登入，確認登入的是平常用 Gemini 的那個帳號；右上角大頭貼可以切換帳號。</li></ul>
+<h3>步驟 2：看「保留活動記錄」現在是開還是關</h3>
+<ul><li>官方說明頁的名稱是「Gemini 記錄」和「保留活動記錄」。新版推出後，畫面可能會多一個管「拿去訓練」的設定，名稱以你看到的畫面為準。</li><li><strong>開著</strong>：你的對話會存進帳號，照自動刪除期限保留（見步驟 3）。</li><li><strong>關著</strong>：之後的對話不會出現在你的紀錄裡，但官方說仍會保留約 2 個月。</li><li><strong>怎麼確認成功</strong>：你能說出自己現在是「開」還是「關」。</li><li><strong>卡住怎麼辦</strong>：找不到開關，往頁面上方或「設定」裡找；介面名稱如果跟這裡不一樣，以畫面為準。</li></ul>
+<h3>步驟 3：看自動刪除期限（紀錄開著的人）</h3>
+<ul><li>官方說明頁寫，自動刪除預設是 18 個月，可以改成 3 個月、36 個月，或不自動刪除。</li><li>想讓紀錄留短一點，就改成 3 個月。</li><li>改短之後，比新期限還舊的紀錄會被刪掉、救不回來，想留的對話先複製存起來再改。</li><li><strong>怎麼確認成功</strong>：設定頁顯示你選的期限。</li><li><strong>卡住怎麼辦</strong>：找不到自動刪除，在活動記錄頁上方找「自動刪除」或寫著期限的那一格；名稱不一樣以畫面為準。</li></ul>
+<h3>步驟 4：找新的「訓練」設定（推出後才有）</h3>
+<ul><li>TechCrunch 報導，新版把「留紀錄」和「拿去訓練 AI」分成兩個設定。如果你想保留紀錄、但不想讓對話拿去訓練，新設定推出後把訓練那個關掉。</li><li><strong>還沒看到也沒關係</strong>：官方說是未來幾週陸續推出，過幾週再回來看一次。</li><li><strong>怎麼確認成功</strong>：兩個設定你都看過、知道各自是開還是關。</li></ul>
+<h3>步驟 5：刪掉以前貼過的敏感對話</h3>
+<ul><li>在活動記錄頁找到那段對話，刪除。刪了就救不回來，還需要的內容先複製存起來。</li><li><strong>怎麼確認成功</strong>：那段對話從活動記錄清單上消失。</li><li><strong>卡住怎麼辦</strong>：找不到那段，用頁面上方的搜尋打對話裡的關鍵字，或用日期往下找。</li><li>要知道：官方說，被人工審查過的對話不會跟著刪，最多留 3 年；而且關掉紀錄後的新對話還是會留約 2 個月。刪除是「減少」，不是「全部消失」。</li></ul>
+<h3>Windows、手機也一樣嗎？</h3>
+<ul><li>這幾步都是在瀏覽器裡做，Mac、Windows 的流程一樣，打開同一個網址就好。</li><li>手機也可以用瀏覽器打開同一個網址。Gemini App 裡的設定位置，官方說明頁沒有逐步寫，以 App 畫面為準。</li><li>Windows 和手機 App 這段是照官方說明頁整理，照做時以你看到的畫面為準。</li></ul></section><section class="page"><div class="head"><div class="num">04</div><div class="label">②</div><h2>不要貼進 AI 的資料清單</h2></div><p>官方說明頁自己就寫：「如有機密資訊不想讓審查員看到，或不願供 Google 用來改良服務，請不要輸入。」下面是我們整理的「別貼」清單，Gemini、ChatGPT、Claude 都適用。</p>
+<h3>這些別貼</h3>
+<ul class="check"><li><strong>密碼、驗證碼、帳號登入資料</strong>：包括「幫我看這個錯誤訊息」時，截圖裡露出的帳號密碼</li><li><strong>身分證字號、護照號碼、健保卡號</strong></li><li><strong>信用卡號、銀行帳號、存摺照片</strong></li><li><strong>客戶的個人資料</strong>：名字、電話、地址、Email、病歷</li><li><strong>合約全文、報價單、還沒公開的公司數字</strong>（營收、薪資、產品計畫）</li><li><strong>公司規定不能外流的東西</strong>：先看公司有沒有 AI 使用規定</li></ul>
+<h3>真的要問，先換成代號</h3>
+<ul><li>客戶名 → A 公司、B 先生</li><li>金額 → 「一個五位數的金額」或隨便改一個數字</li><li>地址、電話 → 刪掉</li><li>合約 → 只貼你要問的那一條，名字和金額先換掉</li></ul>
+<p>跟 AI 說的時候可以這樣開頭（[括號] 換成你的內容）：</p>
+<div class="ai"><button class="cp">複製</button><pre>下面這段合約條款的公司名和金額都換成代號了，請幫我用白話解釋這條在說什麼，還有對乙方可能不利的地方：
+[貼上已經換掉名字和金額的那一條]</pre></div>
+<div class="box tip"><p>💡 換代號這招不只 Gemini，ChatGPT、Claude 都一樣用得上。</p></div></section><section class="page"><div class="head"><div class="num">05</div><div class="label">③</div><h2>Gemini、ChatGPT、Claude 臨時對話保存天數對照表</h2></div><p>「臨時對話」各家叫法不一樣，意思都是：不會出現在你的聊天紀錄裡的那種對話。下面都是各家官方說明（或新聞引述官方）的說法，2026-11-18 整理。</p>
+<h3>Gemini（臨時對話）</h3>
+<ul><li><strong>留多久</strong>：約 2 個月（以前是 72 小時）。關掉紀錄後的一般對話也是約 2 個月。</li><li><strong>會不會拿去訓練</strong>：官方說臨時對話不會拿去訓練 AI 模型。</li><li><strong>例外</strong>：被人工審查過的對話最多留 3 年。</li><li>出處：Google Gemini 隱私權中心</li></ul>
+<h3>ChatGPT（臨時對話）</h3>
+<ul><li><strong>留多久</strong>：官方說明寫，臨時對話會在 30 天內從系統自動刪除，就算你沒手動刪也一樣。</li><li><strong>例外</strong>：TechCrunch 提到，各家可能因為法律或安全原因、或調查違規，把部分資料留更久。</li><li>出處：OpenAI 說明中心「Chat and File Retention Policies」</li></ul>
+<h3>Claude（無痕對話）</h3>
+<ul><li><strong>留多久</strong>：官方說明寫，無痕對話會在 30 天內自動刪除。</li><li><strong>例外</strong>：被標記違反使用政策的對話不在這個 30 天裡。</li><li>出處：Anthropic（Claude）隱私權中心</li></ul>
+<h3>一句話比較</h3>
+<ul><li><strong>三家的臨時對話都會留一段時間</strong>，不是關掉就馬上消失。</li><li><strong>Gemini 現在留最久</strong>（約 2 個月），ChatGPT 和 Claude 是 30 天左右。</li><li><strong>不管哪一家，機密的東西都別貼</strong>，回去看「② 不要貼進 AI 的資料清單」。</li></ul>
+<div class="box warn"><p>⚠️ 天數是各家官方隨時可能改的。要放心貼工作資料前，先打開該家的隱私說明頁看最新寫法。</p></div></section><section class="page"><div class="head"><div class="num">06</div><div class="label">常見問題</div><h2>卡住先看這裡</h2></div><ul><li><strong>我打開設定，只看到一個開關，沒有分開的兩個？</strong>：官方說是未來幾週全球陸續推出，還沒輪到你的帳號，過幾週再看一次。</li><li><strong>我以前把「保留活動記錄」關掉，現在會被打開嗎？</strong>：TechCrunch 報導，原本關掉的人，兩個新設定預設都是關的。推出後還是建議自己打開看一眼。</li><li><strong>付費版（Gemini 付費方案）也一樣嗎？</strong>：官方說明頁沒有另外寫付費版不同，我們沒有查到付費版的例外說法。</li><li><strong>公司給的 Google 帳號呢？</strong>：公司或學校帳號可能由管理員統一設定，以公司的規定為準，先問公司 IT。</li><li><strong>已經貼過合約了怎麼辦？</strong>：先照「① 步驟 5」把那段對話刪掉，之後別再貼；如果是客戶的資料，照公司的資料外洩規定處理。</li></ul></section><section class="page"><div class="head"><div class="num">07</div><div class="label"></div><h2>安全提醒</h2></div><ul><li>「關掉紀錄」和「臨時對話」都不是「沒留下來」：官方說都會留約 2 個月。</li><li>被人工審查過的對話最多留 3 年，刪掉紀錄也不會跟著刪（官方說明頁）。</li><li>沒有哪一家 AI 能讓你貼了就零煩惱；能做的是少貼、換代號、定期檢查設定。</li><li>官方說的天數會改，這份是 2026-11-18 整理的版本。</li><li>這份只講隱私設定，不是法律意見；工作上的資料能不能給 AI，以公司規定和合約為準。</li></ul></section><section class="page"><div class="head"><div class="num">08</div><div class="label">出處</div><h2>資料從哪裡來</h2></div><ul><li><a href="https://techcrunch.com/2026/11/17/google-to-keep-gemini-chats-for-two-months-up-from-72-hours-even-with-history-off/" target="_blank" rel="noopener">TechCrunch：Google to keep Gemini chats for two months, up from 72 hours, even with history off（2026-11-17）</a></li><li><a href="https://support.google.com/gemini/answer/13594961?hl=zh-Hant" target="_blank" rel="noopener">Google Gemini 隱私權中心（繁體中文）</a></li><li><a href="https://help.openai.com/en/articles/8983778-chat-and-file-retention-policies-in-chatgpt" target="_blank" rel="noopener">OpenAI 說明中心：Chat and File Retention Policies in ChatGPT</a></li><li><a href="https://privacy.anthropic.com/en/articles/7996866-how-long-do-you-store-my-data" target="_blank" rel="noopener">Anthropic（Claude）隱私權中心：How long do you store my data?</a></li></ul></section><p class="foot">卡在哪一步，直接回到貼文留言，我們一則一則回。<br>試了再說｜整理自官方文件與原專案，引用請標示出處</p></main><script>document.querySelectorAll('.cp').forEach(b=>b.onclick=()=>{const t=b.parentNode.querySelector('pre').innerText;
+const done=m=>{b.textContent=m;setTimeout(()=>b.textContent='複製',1500)};
+try{navigator.clipboard.writeText(t).then(()=>done('已複製'),()=>{sel(b);done('已選取，按複製')})}catch(e){sel(b);done('已選取，按複製')}});
+document.querySelectorAll('.page img').forEach(i=>i.onclick=()=>{const o=document.createElement('div');o.className='zoom';
+const z=document.createElement('img');z.src=i.src;z.alt=i.alt;o.append(z);o.onclick=()=>o.remove();document.body.append(o)});
+function sel(b){const r=document.createRange();r.selectNodeContents(b.parentNode.querySelector('pre'));const s=getSelection();s.removeAllRanges();s.addRange(r)}</script></body></html>
